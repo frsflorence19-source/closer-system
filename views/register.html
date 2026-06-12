@@ -3,154 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册 - Closer 查询系统</title>
+    <title>注册 - Closer Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #1b2c47 0%, #253d60 100%);
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        .register-box {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        
+        .register-container {
             width: 100%;
-            max-width: 450px;
-            padding: 50px;
+            max-width: 420px;
         }
-        .logo {
+
+        .logo-section {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #c9a84c, #e8c96a);
-            border-radius: 12px;
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
+            font-size: 40px;
             font-weight: 800;
-            color: #1b2c47;
-            font-size: 24px;
+            color: #1a1f3a;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
         }
-        .logo h1 {
-            font-size: 24px;
-            color: #1b2c47;
-            font-weight: 800;
-        }
-        .logo p {
-            color: #999;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: #1b2c47;
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: #d4af37;
+            letter-spacing: 1px;
             margin-bottom: 8px;
         }
-        input {
+
+        .logo-sub {
+            font-size: 12px;
+            color: #8fa3c2;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 20px auto;
+        }
+
+        .register-box {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #d4af37;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .form-input {
             width: 100%;
-            padding: 12px 14px;
-            border: 1.5px solid #ddd;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 10px;
             font-size: 14px;
+            color: #e8e8f0;
             font-family: inherit;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
-        input:focus {
+
+        .form-input::placeholder {
+            color: #7a8ba8;
+        }
+
+        .form-input:focus {
             outline: none;
-            border-color: #c9a84c;
-            box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
-        .btn {
+
+        .btn-register {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #1b2c47, #253d60);
-            color: #e8c96a;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+            color: #1a1f3a;
             border: none;
             border-radius: 10px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             cursor: pointer;
-            margin-bottom: 15px;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
-        .btn:hover {
+
+        .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
         }
+
         .alert {
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 13px;
             display: none;
+            border-left: 4px solid;
         }
+
         .alert.error {
-            background: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
+            background: rgba(220, 53, 69, 0.1);
+            color: #ff7f7f;
+            border-left-color: #dc3545;
         }
+
         .alert.success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
+            background: rgba(40, 167, 69, 0.1);
+            color: #7fff7f;
+            border-left-color: #28a745;
         }
-        .link {
+
+        .footer-link {
             text-align: center;
-            color: #999;
+            margin-top: 24px;
             font-size: 13px;
+            color: #8fa3c2;
         }
-        .link a {
-            color: #c9a84c;
+
+        .footer-link a {
+            color: #d4af37;
             text-decoration: none;
             font-weight: 700;
+        }
+
+        @media (max-width: 480px) {
+            .register-box {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="register-box">
-        <div class="logo">
-            <div class="logo-icon">C</div>
-            <h1>Closer Pro</h1>
-            <p>创建账户</p>
+    <div class="register-container">
+        <div class="logo-section">
+            <div class="logo-box">C</div>
+            <div class="logo-text">Closer Pro</div>
+            <div class="logo-sub">Professional Intelligence System</div>
+            <div class="divider"></div>
         </div>
 
-        <div id="alert" class="alert"></div>
+        <div class="register-box">
+            <div id="alert" class="alert"></div>
 
-        <form id="registerForm">
-            <div class="form-group">
-                <label>用户名</label>
-                <input type="text" id="username" required placeholder="输入用户名" minlength="3">
-            </div>
-            <div class="form-group">
-                <label>邮箱</label>
-                <input type="email" id="email" required placeholder="输入邮箱">
-            </div>
-            <div class="form-group">
-                <label>密码</label>
-                <input type="password" id="password" required placeholder="创建密码" minlength="6">
-            </div>
-            <div class="form-group">
-                <label>确认密码</label>
-                <input type="password" id="confirmPassword" required placeholder="确认密码">
-            </div>
-            <button type="submit" class="btn">创建账户</button>
-        </form>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="username" class="form-input" required placeholder="输入用户名" minlength="3">
+                </div>
 
-        <div class="link">
-            已有账户？<a href="/login">立即登录</a>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" id="email" class="form-input" required placeholder="输入邮箱地址">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="password" class="form-input" required placeholder="创建密码" minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">确认密码</label>
+                    <input type="password" id="confirmPassword" class="form-input" required placeholder="确认密码">
+                </div>
+
+                <button type="submit" class="btn-register">创建账户</button>
+            </form>
+
+            <div class="footer-link">
+                已有账户？<a href="/login">立即登录</a>
+            </div>
         </div>
     </div>
 
@@ -165,7 +225,7 @@
 
             if (password !== confirmPassword) {
                 alert.className = 'alert error';
-                alert.textContent = '密码不一致';
+                alert.textContent = '两次输入的密码不一致';
                 alert.style.display = 'block';
                 return;
             }
@@ -179,7 +239,7 @@
                 const data = await res.json();
                 if (data.success) {
                     alert.className = 'alert success';
-                    alert.textContent = data.message;
+                    alert.textContent = '注册成功，正在跳转到登录...';
                     alert.style.display = 'block';
                     setTimeout(() => window.location.href = '/login', 2000);
                 } else {
