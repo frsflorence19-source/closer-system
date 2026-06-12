@@ -158,7 +158,7 @@ app.put('/api/users/:id/role', isLoggedIn, isAdmin, (req, res) => {
 app.put('/api/users/:id/status', isLoggedIn, isAdmin, (req, res) => {
   const { status } = req.body;
   const userId = req.params.id;
-  
+
   if (!['active', 'disabled'].includes(status)) {
     return res.json({ success: false, message: '无效的状态' });
   }
@@ -168,6 +168,23 @@ app.put('/api/users/:id/status', isLoggedIn, isAdmin, (req, res) => {
       return res.json({ success: false, message: '更新失败' });
     }
     res.json({ success: true, message: '状态已更新' });
+  });
+});
+
+app.put('/api/users/:id/reset-password', isLoggedIn, isAdmin, (req, res) => {
+  const userId = req.params.id;
+  const tempPassword = Math.random().toString(36).slice(-8);
+  const hashedPassword = bcrypt.hashSync(tempPassword, 10);
+
+  db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId], function(err) {
+    if (err) {
+      return res.json({ success: false, message: '重置失败' });
+    }
+    res.json({
+      success: true,
+      message: '密码已重置',
+      tempPassword: tempPassword
+    });
   });
 });
 

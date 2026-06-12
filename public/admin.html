@@ -65,7 +65,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 40px;
         }
@@ -118,7 +118,7 @@
             font-size: 13px;
         }
 
-        .role-select {
+        .role-select, .status-select {
             padding: 6px 8px;
             background: #2a2a3e;
             border: 1px solid #3a3a4e;
@@ -128,61 +128,26 @@
             font-size: 12px;
         }
 
-        .role-select:focus {
+        .role-select:focus, .status-select:focus {
             outline: none;
             border-color: #d4af37;
         }
 
-        .status-select {
-            padding: 6px 8px;
-            background: #2a2a3e;
-            border: 1px solid #3a3a4e;
+        .reset-btn {
+            padding: 6px 12px;
+            background: #d4af37;
+            color: #0a0a0a;
+            border: none;
             border-radius: 4px;
-            color: #e8e8e8;
             cursor: pointer;
-            font-size: 12px;
-        }
-
-        .status-select:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 4px;
             font-size: 11px;
             font-weight: 700;
+            transition: all 0.2s;
         }
 
-        .status-active {
-            background: rgba(40, 167, 69, 0.2);
-            color: #7fff7f;
-        }
-
-        .status-disabled {
-            background: rgba(220, 53, 69, 0.2);
-            color: #ff8a8a;
-        }
-
-        .alert {
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .alert.success {
-            background: rgba(40, 167, 69, 0.1);
-            color: #7fff7f;
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-
-        .alert.error {
-            background: rgba(220, 53, 69, 0.1);
-            color: #ff8a8a;
-            border: 1px solid rgba(220, 53, 69, 0.3);
+        .reset-btn:hover {
+            background: #e8c547;
+            transform: translateY(-1px);
         }
 
         .stats {
@@ -212,6 +177,102 @@
             color: #8fa3c2;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        .alert {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #7fff7f;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .alert.error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #ff8a8a;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border: 1px solid #3a3a4e;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        .password-box {
+            background: #0f0f1e;
+            border: 1px solid #3a3a4e;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #d4af37;
+            word-break: break-all;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            background: #d4af37;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .modal-btn:hover {
+            background: #e8c547;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: #3a3a4e;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #4a4a5e;
         }
 
         @media (max-width: 768px) {
@@ -258,7 +319,7 @@
             </div>
         </div>
 
-        <h2 class="section-title">用户管理</h2>
+        <h2 class="section-title">用户管理 - 完整信息</h2>
         <table class="users-table">
             <thead>
                 <tr>
@@ -266,14 +327,29 @@
                     <th>邮箱</th>
                     <th>角色</th>
                     <th>状态</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody id="usersList">
                 <tr>
-                    <td colspan="4" style="text-align: center; color: #8fa3c2;">加载中...</td>
+                    <td colspan="5" style="text-align: center; color: #8fa3c2;">加载中...</td>
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- 密码重置弹窗 -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">✅ 密码已重置</div>
+            <div style="color: #8fa3c2; margin-bottom: 20px;">临时密码为：</div>
+            <div class="password-box" id="tempPassword"></div>
+            <div style="margin-bottom: 20px; font-size: 13px; color: #8fa3c2;">
+                请将此密码告知用户，<br>他们可以用此密码登录后修改密码
+            </div>
+            <button class="copy-btn" onclick="copyPassword()">📋 复制密码</button>
+            <button class="modal-btn" onclick="closePasswordModal()">完成</button>
+        </div>
     </div>
 
     <script>
@@ -307,6 +383,11 @@
                             <option value="active" ${user.status === 'active' ? 'selected' : ''}>启用</option>
                             <option value="disabled" ${user.status === 'disabled' ? 'selected' : ''}>禁用</option>
                         </select>
+                    </td>
+                    <td>
+                        <button class="reset-btn" onclick="resetUserPassword(${user.id}, '${user.username}')">
+                            🔑 重置密码
+                        </button>
                     </td>
                 </tr>
             `).join('');
@@ -354,6 +435,37 @@
             } catch (e) {
                 showAlert('更新失败', 'error');
             }
+        }
+
+        async function resetUserPassword(userId, username) {
+            try {
+                const res = await fetch(`/api/users/${userId}/reset-password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('tempPassword').textContent = data.tempPassword;
+                    document.getElementById('passwordModal').classList.add('show');
+                    loadUsers();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('重置失败', 'error');
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('tempPassword').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                showAlert('密码已复制到剪贴板', 'success');
+            });
         }
 
         function showAlert(msg, type) {
