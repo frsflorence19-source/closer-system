@@ -14,8 +14,17 @@ db.serialize(() => {
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    role TEXT DEFAULT 'user',
+    status TEXT DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+
+  // 创建默认 Admin 账户
+  const adminPassword = bcrypt.hashSync('admin123', 10);
+  db.run(
+    'INSERT OR IGNORE INTO users (id, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)',
+    [1, 'admin', 'admin@closer.com', adminPassword, 'admin', 'active']
+  );
 });
 
 app.use(express.json());
@@ -36,9 +45,21 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
+const isAdmin = (req, res, next) => {
+  if (req.session.role === 'admin') {
+    next();
+  } else {
+    res.status(403).json({ success: false, message: '需要 Admin 权限' });
+  }
+};
+
 app.get('/', (req, res) => {
   if (req.session.userId) {
-    res.redirect('/system');
+    if (req.session.role === 'admin') {
+      res.redirect('/admin');
+    } else {
+      res.redirect('/system');
+    }
   } else {
     res.redirect('/login');
   }
@@ -58,12 +79,16 @@ app.post('/api/register', (req, res) => {
     return res.json({ success: false, message: '信息不完整或密码不匹配' });
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
-  db.run('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword], function(err) {
-    if (err) {
-      return res.json({ success: false, message: '用户名或邮箱已存在' });
+  db.run(
+    'INSERT INTO users (username, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
+    [username, email, hashedPassword, 'user', 'active'],
+    function(err) {
+      if (err) {
+        return res.json({ success: false, message: '用户名或邮箱已存在' });
+      }
+      res.json({ success: true, message: '注册成功，请登录' });
     }
-    res.json({ success: true, message: '注册成功，请登录' });
-  });
+  );
 });
 
 app.post('/api/login', (req, res) => {
@@ -75,9 +100,13 @@ app.post('/api/login', (req, res) => {
     if (err || !user) {
       return res.json({ success: false, message: '用户名或密码错误' });
     }
+    if (user.status !== 'active') {
+      return res.json({ success: false, message: '账户已被禁用' });
+    }
     if (bcrypt.compareSync(password, user.password)) {
       req.session.userId = user.id;
       req.session.username = user.username;
+      req.session.role = user.role;
       res.json({ success: true, message: '登录成功' });
     } else {
       res.json({ success: false, message: '用户名或密码错误' });
@@ -89,8 +118,57 @@ app.get('/system', isLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'system.html'));
 });
 
+app.get('/admin', isLoggedIn, isAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 app.get('/api/user', isLoggedIn, (req, res) => {
-  res.json({ id: req.session.userId, username: req.session.username });
+  res.json({
+    id: req.session.userId,
+    username: req.session.username,
+    role: req.session.role
+  });
+});
+
+app.get('/api/users', isLoggedIn, isAdmin, (req, res) => {
+  db.all('SELECT id, username, email, role, status FROM users', (err, users) => {
+    if (err) {
+      return res.json({ success: false, message: '获取用户失败' });
+    }
+    res.json({ success: true, users });
+  });
+});
+
+app.put('/api/users/:id/role', isLoggedIn, isAdmin, (req, res) => {
+  const { role } = req.body;
+  const userId = req.params.id;
+  
+  if (!['admin', 'user'].includes(role)) {
+    return res.json({ success: false, message: '无效的角色' });
+  }
+
+  db.run('UPDATE users SET role = ? WHERE id = ?', [role, userId], function(err) {
+    if (err) {
+      return res.json({ success: false, message: '更新失败' });
+    }
+    res.json({ success: true, message: '角色已更新' });
+  });
+});
+
+app.put('/api/users/:id/status', isLoggedIn, isAdmin, (req, res) => {
+  const { status } = req.body;
+  const userId = req.params.id;
+  
+  if (!['active', 'disabled'].includes(status)) {
+    return res.json({ success: false, message: '无效的状态' });
+  }
+
+  db.run('UPDATE users SET status = ? WHERE id = ?', [status, userId], function(err) {
+    if (err) {
+      return res.json({ success: false, message: '更新失败' });
+    }
+    res.json({ success: true, message: '状态已更新' });
+  });
 });
 
 app.get('/api/logout', (req, res) => {
@@ -100,4 +178,5 @@ app.get('/api/logout', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Closer 系统运行在端口 ${PORT}`);
+  console.log(`默认 Admin 账户: admin / admin123`);
 });
