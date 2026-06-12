@@ -96,7 +96,7 @@ app.post('/api/login', (req, res) => {
   if (!username || !password) {
     return res.json({ success: false, message: '用户名和密码不能为空' });
   }
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+  db.get('SELECT * FROM users WHERE username = ? OR email = ?', [username, username], (err, user) => {
     if (err || !user) {
       return res.json({ success: false, message: '用户名或密码错误' });
     }
