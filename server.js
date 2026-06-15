@@ -139,6 +139,32 @@ app.get('/api/users', isLoggedIn, isAdmin, (req, res) => {
   });
 });
 
+app.post('/api/users', isLoggedIn, isAdmin, (req, res) => {
+  const { username, email, role } = req.body;
+
+  if (!username || !email) {
+    return res.json({ success: false, message: '用户名和邮箱不能为空' });
+  }
+
+  const tempPassword = Math.random().toString(36).slice(-8);
+  const hashedPassword = bcrypt.hashSync(tempPassword, 10);
+
+  db.run(
+    'INSERT INTO users (username, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
+    [username, email, hashedPassword, role || 'user', 'active'],
+    function(err) {
+      if (err) {
+        return res.json({ success: false, message: '用户名或邮箱已存在' });
+      }
+      res.json({
+        success: true,
+        message: '用户已创建',
+        tempPassword: tempPassword
+      });
+    }
+  );
+});
+
 app.put('/api/users/:id/role', isLoggedIn, isAdmin, (req, res) => {
   const { role } = req.body;
   const userId = req.params.id;

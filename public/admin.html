@@ -34,21 +34,6 @@
             gap: 20px;
         }
 
-        .user-info {
-            text-align: right;
-        }
-
-        .username {
-            font-weight: 700;
-            color: #e8e8e8;
-        }
-
-        .role-badge {
-            font-size: 11px;
-            color: #d4af37;
-            font-weight: 700;
-        }
-
         .logout-btn {
             padding: 8px 20px;
             background: #d4af37;
@@ -77,6 +62,67 @@
             margin-bottom: 24px;
             padding-bottom: 12px;
             border-bottom: 1px solid #3a3a4e;
+        }
+
+        .create-section {
+            background: #1a1a2e;
+            border: 1px solid #3a3a4e;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 11px;
+            color: #d4af37;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 12px;
+            background: #2a2a3e;
+            border: 1px solid #3a3a4e;
+            border-radius: 6px;
+            color: #e8e8e8;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .create-btn {
+            padding: 10px 20px;
+            background: #d4af37;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #e8c547;
+            transform: translateY(-1px);
         }
 
         .users-table {
@@ -128,11 +174,6 @@
             font-size: 12px;
         }
 
-        .role-select:focus, .status-select:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
-
         .reset-btn {
             padding: 6px 12px;
             background: #d4af37;
@@ -142,12 +183,10 @@
             cursor: pointer;
             font-size: 11px;
             font-weight: 700;
-            transition: all 0.2s;
         }
 
         .reset-btn:hover {
             background: #e8c547;
-            transform: translateY(-1px);
         }
 
         .stats {
@@ -255,10 +294,6 @@
             font-size: 13px;
         }
 
-        .modal-btn:hover {
-            background: #e8c547;
-        }
-
         .copy-btn {
             padding: 8px 16px;
             background: #3a3a4e;
@@ -271,20 +306,12 @@
             margin-left: 10px;
         }
 
-        .copy-btn:hover {
-            background: #4a4a5e;
-        }
-
         @media (max-width: 768px) {
-            .stats {
+            .form-row {
                 grid-template-columns: 1fr;
             }
-            .users-table {
-                font-size: 12px;
-            }
-            .users-table th,
-            .users-table td {
-                padding: 10px;
+            .stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -292,13 +319,7 @@
 <body>
     <div class="header">
         <div class="header-title">⚙️ Admin 管理</div>
-        <div class="header-right">
-            <div class="user-info">
-                <div class="username" id="adminName">Admin</div>
-                <div class="role-badge">管理员</div>
-            </div>
-            <button class="logout-btn" onclick="logout()">登出</button>
-        </div>
+        <button class="logout-btn" onclick="logout()">登出</button>
     </div>
 
     <div class="container">
@@ -319,7 +340,29 @@
             </div>
         </div>
 
-        <h2 class="section-title">用户管理 - 完整信息</h2>
+        <h2 class="section-title">➕ 创建新用户</h2>
+        <div class="create-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="newUsername" class="form-input" placeholder="输入用户名" minlength="3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" id="newEmail" class="form-input" placeholder="输入邮箱">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">角色</label>
+                    <select id="newRole" class="form-select">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="create-btn" onclick="createUser()">创建用户</button>
+            </div>
+        </div>
+
+        <h2 class="section-title">👥 用户管理</h2>
         <table class="users-table">
             <thead>
                 <tr>
@@ -338,14 +381,13 @@
         </table>
     </div>
 
-    <!-- 密码重置弹窗 -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
-            <div class="modal-title">✅ 密码已重置</div>
+            <div class="modal-title">✅ 用户已创建</div>
             <div style="color: #8fa3c2; margin-bottom: 20px;">临时密码为：</div>
             <div class="password-box" id="tempPassword"></div>
             <div style="margin-bottom: 20px; font-size: 13px; color: #8fa3c2;">
-                请将此密码告知用户，<br>他们可以用此密码登录后修改密码
+                请将此密码告知用户，<br>他们用此密码登录后可修改密码
             </div>
             <button class="copy-btn" onclick="copyPassword()">📋 复制密码</button>
             <button class="modal-btn" onclick="closePasswordModal()">完成</button>
@@ -363,6 +405,38 @@
                 }
             } catch (e) {
                 showAlert('加载用户失败', 'error');
+            }
+        }
+
+        async function createUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const role = document.getElementById('newRole').value;
+
+            if (!username || !email) {
+                showAlert('请填写用户名和邮箱', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, role })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newEmail').value = '';
+                    document.getElementById('newRole').value = 'user';
+                    document.getElementById('tempPassword').textContent = data.tempPassword;
+                    document.getElementById('passwordModal').classList.add('show');
+                    loadUsers();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('创建失败', 'error');
             }
         }
 
@@ -385,9 +459,7 @@
                         </select>
                     </td>
                     <td>
-                        <button class="reset-btn" onclick="resetUserPassword(${user.id}, '${user.username}')">
-                            🔑 重置密码
-                        </button>
+                        <button class="reset-btn" onclick="resetUserPassword(${user.id})">🔑 重置密码</button>
                     </td>
                 </tr>
             `).join('');
@@ -410,8 +482,6 @@
                 if (data.success) {
                     showAlert('角色已更新', 'success');
                     loadUsers();
-                } else {
-                    showAlert(data.message, 'error');
                 }
             } catch (e) {
                 showAlert('更新失败', 'error');
@@ -429,15 +499,13 @@
                 if (data.success) {
                     showAlert('状态已更新', 'success');
                     loadUsers();
-                } else {
-                    showAlert(data.message, 'error');
                 }
             } catch (e) {
                 showAlert('更新失败', 'error');
             }
         }
 
-        async function resetUserPassword(userId, username) {
+        async function resetUserPassword(userId) {
             try {
                 const res = await fetch(`/api/users/${userId}/reset-password`, {
                     method: 'PUT',
@@ -449,8 +517,6 @@
                     document.getElementById('tempPassword').textContent = data.tempPassword;
                     document.getElementById('passwordModal').classList.add('show');
                     loadUsers();
-                } else {
-                    showAlert(data.message, 'error');
                 }
             } catch (e) {
                 showAlert('重置失败', 'error');
@@ -464,7 +530,7 @@
         function copyPassword() {
             const password = document.getElementById('tempPassword').textContent;
             navigator.clipboard.writeText(password).then(() => {
-                showAlert('密码已复制到剪贴板', 'success');
+                showAlert('已复制到剪贴板', 'success');
             });
         }
 
@@ -482,7 +548,6 @@
             });
         }
 
-        // 初始化
         loadUsers();
     </script>
 </body>
