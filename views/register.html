@@ -80,11 +80,22 @@
             width: 100%;
             height: 1px;
             background: linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 30px;
+            font-size: 13px;
+            color: #d4af37;
+            text-align: center;
         }
 
         .form-group {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             text-align: left;
         }
 
@@ -94,13 +105,13 @@
             color: #d4af37;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 700;
         }
 
         .form-input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 6px;
@@ -121,9 +132,9 @@
             box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
         }
 
-        .btn {
+        .btn-register {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #c9a854 0%, #d4af37 50%, #c9a854 100%);
             color: #0a0a0a;
             border: none;
@@ -134,10 +145,10 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 8px;
+            margin-bottom: 16px;
         }
 
-        .btn:hover {
+        .btn-register:hover {
             background: linear-gradient(135deg, #d4af37 0%, #e8c547 50%, #d4af37 100%);
             transform: translateY(-1px);
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
@@ -146,7 +157,7 @@
         .alert {
             padding: 12px 14px;
             border-radius: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 13px;
             display: none;
             border-left: 3px solid;
@@ -165,7 +176,7 @@
         }
 
         .footer {
-            margin-top: 32px;
+            margin-top: 24px;
             font-size: 13px;
             color: #8fa3c2;
         }
@@ -174,6 +185,26 @@
             color: #d4af37;
             text-decoration: none;
             font-weight: 700;
+        }
+
+        .btn-login-direct {
+            width: 100%;
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            margin-top: 12px;
+        }
+
+        .btn-login-direct:hover {
+            background: rgba(212, 175, 55, 0.3);
         }
 
         @media (max-width: 480px) {
@@ -188,9 +219,14 @@
         <div class="badge">⚔</div>
         
         <h1 class="title">Closer Pro</h1>
-        <p class="subtitle">Create Account</p>
+        <p class="subtitle">Professional Intelligence System</p>
         
         <div class="divider"></div>
+
+        <div class="info-box">
+            ⚠️ 已经注册过了？<br>
+            <a href="/login" style="color: #d4af37; text-decoration: underline;">直接登录 →</a>
+        </div>
 
         <div id="alert" class="alert"></div>
 
@@ -215,7 +251,7 @@
                 <input type="password" id="confirmPassword" class="form-input" required placeholder="确认密码">
             </div>
 
-            <button type="submit" class="btn">创建账户</button>
+            <button type="submit" class="btn-register">创建账户</button>
         </form>
 
         <div class="footer">
@@ -248,9 +284,11 @@
                 const data = await res.json();
                 if (data.success) {
                     alert.className = 'alert success';
-                    alert.textContent = '注册成功，正在跳转...';
+                    alert.textContent = '✅ 注册成功！正在跳转到登录...';
                     alert.style.display = 'block';
-                    setTimeout(() => window.location.href = '/login', 2000);
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
                 } else {
                     alert.className = 'alert error';
                     alert.textContent = data.message;
@@ -258,7 +296,7 @@
                 }
             } catch (e) {
                 alert.className = 'alert error';
-                alert.textContent = '注册失败';
+                alert.textContent = '注册失败，请重试';
                 alert.style.display = 'block';
             }
         });
